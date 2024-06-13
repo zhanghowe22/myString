@@ -18,7 +18,7 @@ int main() {
 	/* “123456789”  34修改为 abc 得到 12abc56789 */
 	myString str4("123456789");
 	std::cout << "[3] " << str4 << " ----> ";
-	char char1[]{ "345" };
+	char char1[]{ "34" };
 	char char2[]{ "abc" };
 	std::cout << str4.str_replace(char1, char2) << std::endl;
 

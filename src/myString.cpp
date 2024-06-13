@@ -1,85 +1,5 @@
 #include "myString.h"
 
-myString myString::int2Str(int num)
-{
-	char int_str[12]; // 存储一个32位整数的数组
-	int len = 0;
-	bool is_negative = num < 0;
-	if (is_negative) {
-		num = -num;
-	}
-	do
-	{
-		int_str[len++] = '0' + (num % 10);
-		num /= 10;
-	} while (num > 0);
-
-	if (is_negative) {
-		int_str[len++] = '-';
-	}
-
-	for (int i = 0; i < len / 2; ++i)
-	{
-		std::swap(int_str[i], int_str[len - i - 1]);
-	}
-	int_str[len] = '\0';
-
-	myString ret_str(int_str);
-
-	return ret_str;
-}
-
-std::vector<int> myString::buildPrefixTable(const char* needle)
-{
-	int m = std::strlen(needle);
-	std::vector<int> prefixTable(m, 0);
-	int j = 0;
-
-	for (int i = 1; i < m; ++i) {
-		while (j > 0 && needle[i] != needle[j]) 
-		{
-			j = prefixTable[j - 1];
-		}
-		if (needle[i] == needle[j]) {
-			++j;
-		}
-		prefixTable[i] = j;
-	}
-	return prefixTable;
-}
-
-char* myString::str_pos(char* haystack, char* needle)
-{
-	if (!*needle) {
-		return haystack;
-	}
-
-	int n = std::strlen(haystack);
-	int m = std::strlen(needle);
-
-	if (m > n) {
-		return nullptr;
-	}
-
-	std::vector<int> prefixTable = buildPrefixTable(needle);
-
-	int j = 0;
-
-	for (int i = 0; i < n; ++i) {
-		while (j > 0 && haystack[i] != needle[j])
-		{
-			j = prefixTable[j - 1];
-		}
-		if (haystack[i] == needle[j]) {
-			++j;
-		}
-		if (j == m) {
-			return haystack + i - m + 1;
-		}
-	}
-	return nullptr;
-}
-
 myString::myString(unsigned capacity)
 {
 	length = 0;
@@ -90,7 +10,7 @@ myString::myString(unsigned capacity)
 
 myString::myString(const char* str)
 {
-	length = strlen(str);
+	length = myString::str_len(const_cast<char*>(str));
 	buffer_size = length + 1;
 	buffer = new char[buffer_size];
 	memcpy(buffer, str, length + 1);
@@ -151,8 +71,8 @@ myString myString::str_replace(char* old_sub, char* new_sub)
 
 	size_t pos_index = pos - buffer;
 
-	size_t old_len = strlen(old_sub);
-	size_t new_len = strlen(new_sub);
+	size_t old_len = myString::str_len(old_sub);
+	size_t new_len = myString::str_len(new_sub);
 	size_t new_total_length = length - old_len + new_len;
 	if (new_total_length >= buffer_size) {
 		resizeBuffer(new_total_length + 1);
@@ -176,5 +96,96 @@ int myString::str_find(char* sub)
 	std::cout << "在字符串 " << buffer << " 中没有找到字符串 " << sub << " 查找失败 ";
 	return -1;
 }
+
+myString myString::int2Str(int num)
+{
+	char int_str[12]; // 存储一个32位整数的数组
+	int len = 0;
+	bool is_negative = num < 0;
+	if (is_negative) {
+		num = -num;
+	}
+	do
+	{
+		int_str[len++] = '0' + (num % 10);
+		num /= 10;
+	} while (num > 0);
+
+	if (is_negative) {
+		int_str[len++] = '-';
+	}
+
+	for (int i = 0; i < len / 2; ++i)
+	{
+		std::swap(int_str[i], int_str[len - i - 1]);
+	}
+	int_str[len] = '\0';
+
+	myString ret_str(int_str);
+
+	return ret_str;
+}
+
+std::vector<int> myString::buildPrefixTable(char* needle)
+{
+	int m = myString::str_len(needle);
+	std::vector<int> prefixTable(m, 0);
+	int j = 0;
+
+	for (int i = 1; i < m; ++i) {
+		while (j > 0 && needle[i] != needle[j])
+		{
+			j = prefixTable[j - 1];
+		}
+		if (needle[i] == needle[j]) {
+			++j;
+		}
+		prefixTable[i] = j;
+	}
+	return prefixTable;
+}
+
+char* myString::str_pos(char* haystack, char* needle)
+{
+	if (!*needle) {
+		return haystack;
+	}
+
+	int n = myString::str_len(haystack);
+	int m = myString::str_len(needle);
+
+	if (m > n) {
+		return nullptr;
+	}
+
+	std::vector<int> prefixTable = buildPrefixTable(needle);
+
+	int j = 0;
+
+	for (int i = 0; i < n; ++i) {
+		while (j > 0 && haystack[i] != needle[j])
+		{
+			j = prefixTable[j - 1];
+		}
+		if (haystack[i] == needle[j]) {
+			++j;
+		}
+		if (j == m) {
+			return haystack + i - m + 1;
+		}
+	}
+	return nullptr;
+}
+
+size_t myString::str_len(char* str)
+{
+	char* s = str;
+	while (*s)
+	{
+		++s;
+	}
+	return s - str;
+}
+
 
 

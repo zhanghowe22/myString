@@ -23,11 +23,7 @@ class myString
 	myString int2Str(int num);
 
 	// 构建部分匹配值表
-	std::vector<int> buildPrefixTable(const char* needle);
-
-	// KMP字符串匹配算法 实现std::strstr()
-	char* str_pos(char* haystack, char* needle);
-
+	std::vector<int> buildPrefixTable(char* needle);
 
 public:
 	myString(unsigned capacity = 16);
@@ -40,13 +36,19 @@ public:
 
 	myString& operator+(const myString& other);
 
+	myString& operator+(const int num);
+
 	myString& operator-(const myString& other);
 
 	myString str_replace(char* old_sub, char* new_sub);
 
 	int str_find(char* sub);
 
-	myString& operator+(const int num);
+	// KMP字符串匹配算法 实现std::strstr()
+	char* str_pos(char* haystack, char* needle);
+
+	// 实现std::strlen()
+	static size_t str_len(char* str);
 
 	friend std::ostream& operator<<(std::ostream& os, const myString& str) {
 		os << str.buffer;
