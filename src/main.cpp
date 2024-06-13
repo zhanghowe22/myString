@@ -18,14 +18,15 @@ int main() {
 	/* “123456789”  34修改为 abc 得到 12abc56789 */
 	myString str4("123456789");
 	std::cout << "[3] " << str4 << " ----> ";
-	const char char1[]{ "345" };
-	const char char2[]{ "abc" };
+	char char1[]{ "345" };
+	char char2[]{ "abc" };
 	std::cout << str4.str_replace(char1, char2) << std::endl;
 
 	/* 123456 查 34 得到 34的位置 2 */
 	myString str5("123456789");
 	std::cout << "[4] " << str5 << " ----> ";
-	std::cout << str5.str_find("34") << std::endl;
+	char char3[]{ "34" };
+	std::cout << str5.str_find(char3) << std::endl;
 
 	/* 重载 = 实现 int 转 hstring 字符串 */
 	myString str6("abcdef");

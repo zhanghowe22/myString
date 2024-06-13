@@ -29,6 +29,57 @@ myString myString::int2Str(int num)
 	return ret_str;
 }
 
+std::vector<int> myString::buildPrefixTable(const char* needle)
+{
+	int m = std::strlen(needle);
+	std::vector<int> prefixTable(m, 0);
+	int j = 0;
+
+	for (int i = 1; i < m; ++i) {
+		while (j > 0 && needle[i] != needle[j]) 
+		{
+			j = prefixTable[j - 1];
+		}
+		if (needle[i] == needle[j]) {
+			++j;
+		}
+		prefixTable[i] = j;
+	}
+	return prefixTable;
+}
+
+char* myString::str_pos(char* haystack, char* needle)
+{
+	if (!*needle) {
+		return haystack;
+	}
+
+	int n = std::strlen(haystack);
+	int m = std::strlen(needle);
+
+	if (m > n) {
+		return nullptr;
+	}
+
+	std::vector<int> prefixTable = buildPrefixTable(needle);
+
+	int j = 0;
+
+	for (int i = 0; i < n; ++i) {
+		while (j > 0 && haystack[i] != needle[j])
+		{
+			j = prefixTable[j - 1];
+		}
+		if (haystack[i] == needle[j]) {
+			++j;
+		}
+		if (j == m) {
+			return haystack + i - m + 1;
+		}
+	}
+	return nullptr;
+}
+
 myString::myString(unsigned capacity)
 {
 	length = 0;
@@ -76,7 +127,7 @@ myString& myString::operator+(const int num)
 
 myString& myString::operator-(const myString& other)
 {
-	char* pos = std::strstr(buffer, other.buffer);
+	char* pos = str_pos(buffer, other.buffer);
 	if (!pos)
 	{
 		std::cout << "ÔÚ×Ö·û´® " << buffer << " ÖÐÃ»ÓÐÕÒµ½×Ö·û´® " << other.buffer << " É¾³ýÊ§°Ü ";
@@ -89,9 +140,9 @@ myString& myString::operator-(const myString& other)
 	return *this;
 }
 
-myString myString::str_replace(const char* old_sub, const char* new_sub)
+myString myString::str_replace(char* old_sub, char* new_sub)
 {
-	char* pos = std::strstr(buffer, old_sub);
+	char* pos = str_pos(buffer, old_sub);
 
 	if (!pos) {
 		std::cout << "ÔÚ×Ö·û´® " << buffer << " ÖÐÃ»ÓÐÕÒµ½×Ö·û´® " << old_sub << " Ìæ»»Ê§°Ü ";
@@ -116,9 +167,9 @@ myString myString::str_replace(const char* old_sub, const char* new_sub)
 	return *this;
 }
 
-int myString::str_find(const char* sub) const
+int myString::str_find(char* sub)
 {
-	char* pos = std::strstr(buffer, sub);
+	char* pos = str_pos(buffer, sub);
 	if (pos) {
 		return pos - buffer;
 	}

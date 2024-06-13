@@ -2,6 +2,7 @@
 #pragma once
 #include <iostream>
 #include <cstring>
+#include <vector>
 
 class myString
 {
@@ -18,8 +19,14 @@ class myString
 		buffer_size = new_size * 2;
 	}
 
+	// int 转 myString
 	myString int2Str(int num);
 
+	// 构建部分匹配值表
+	std::vector<int> buildPrefixTable(const char* needle);
+
+	// KMP字符串匹配算法 实现std::strstr()
+	char* str_pos(char* haystack, char* needle);
 
 
 public:
@@ -35,9 +42,9 @@ public:
 
 	myString& operator-(const myString& other);
 
-	myString str_replace(const char* old_sub, const char* new_sub);
+	myString str_replace(char* old_sub, char* new_sub);
 
-	int str_find(const char* sub) const;
+	int str_find(char* sub);
 
 	myString& operator+(const int num);
 
